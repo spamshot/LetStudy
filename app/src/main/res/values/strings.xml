@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">LetStudy</string>
+    <string name="c_economics">Economics</string>
+    <string name="c_physics">Physics</string>
+    <string name="c_spanish">Spanish</string>
+    <string name="c_history">History</string>
+    <string name="c_geography">Geography</string>
+    <string name="c_anatomy">Anatomy</string>
+    <string name="c_baking">Baking</string>
+    <string name="c_fitness">Fitness</string>
+    <string name="c_law">Law and Order</string>
+    <string name="c_photography">Photography</string>
+    <string name="c_woodworking">Woodworking</string>
+
+    <string name="history">History</string>
+    <string name="physics">Physics</string>
+    <string name="spanish">Spanish</string>
+    <string name="economics">Economics</string>
+    <string name="geography">Geography</string>
+    <string name="anatomy">Anatomy</string>
+    <string name="baking">Baking</string>
+    <string name="fitness">Fitness</string>
+    <string name="law">Law</string>
+    <string name="photography">Photography</string>
+    <string name="woodworking">Woodworking</string>
+</resources>
