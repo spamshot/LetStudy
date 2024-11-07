@@ -1,6 +1,5 @@
 package com.example.letstudy
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,14 +14,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.letstudy.data.Datasource
 import com.example.letstudy.model.Courses
 
@@ -30,10 +26,12 @@ import com.example.letstudy.model.Courses
 @Composable
 fun CourseApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "start_screen") {
+    NavHost(navController = navController,
+        startDestination = "start_screen") {
         composable("start_screen") { StartScreen(navController) }
-        composable("history_screen") { ScreenHistory() }
+        composable("history_screen") { ScreenHistory(navController) }
         composable("physics_screen") { ScreenPhysics() }
+        composable("ScreenScorePage") { ScreenScorePage(navController) }
     }
 }
 @Composable
