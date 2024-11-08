@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 
-
 @Composable
 fun ScreenScorePage(navController: NavController) {
     //Image is used as background
@@ -76,3 +75,4 @@ fun ScreenScorePage(navController: NavController) {
         }
     }
 }
+//TODO Test plan on blueridge

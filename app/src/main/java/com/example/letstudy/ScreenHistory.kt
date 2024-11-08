@@ -35,7 +35,6 @@ fun ScreenHistory(navController: NavHostController) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
     val currentQuestion = questions[currentQuestionIndex]
     var score by remember { mutableStateOf(0) }
-    var showScore by remember { mutableStateOf(false) } // State to control score visibility
 
     var buttonColors = remember {
         mutableStateListOf<Color>(*List(currentQuestion.options.size)
@@ -46,127 +45,104 @@ fun ScreenHistory(navController: NavHostController) {
         {false}.toTypedArray()) }
 
     var isButtonVisible by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp, top = 33.dp, end = 16.dp)
+    ) {
+        Text(text = "Question ${currentQuestionIndex + 1}/${questions.size}")
+        LinearProgressIndicator(
+            progress = (currentQuestionIndex + 1f) / questions.size,
+            color = Color.Green,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-    if (showScore) { //todo don't need, was used for old code
-        // Display the score screen
-//        navController.navigate("ScreenScorePage"){
-//            popUpTo("history_screen"){
-//                inclusive = true
-//            }
-//        }
-
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Text(
-//                text = "Quiz Completed!",
-//                fontSize = 24.sp,
-//                fontWeight = FontWeight.Bold
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Text(
-//                text = "Your Score: $score out of ${questions.size}",
-//                fontSize = 20.sp
-//            )
-//        }
-    } else {
-        // Display the quiz questions
-        Column(
+        Card(
             modifier = Modifier
-                .padding(start = 16.dp, top = 33.dp, end = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 10.dp, bottom = 10.dp)
         ) {
-            Text(text = "Question ${currentQuestionIndex + 1}/${questions.size}")
-            LinearProgressIndicator(
-                progress = (currentQuestionIndex + 1f) / questions.size,
-                color = Color.Green,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 10.dp)
+                    .wrapContentSize()
+                    .align(Alignment.CenterHorizontally)
             ) {
-                Column(
+                Text(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(10.dp),
-                        textAlign = TextAlign.Center,
-                        fontSize = 22.sp,
-                        text = currentQuestion.question
-                    )
-                }
+                        .padding(10.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = 22.sp,
+                    text = currentQuestion.question
+                )
             }
-            // Button handling
-            currentQuestion.options.forEachIndexed { index, option ->
-                Button(
-                    onClick = {
-                        val isCorrect = checkAnswer(index, currentQuestion.correctAnswer)
-                        if (isCorrect) { // Right answer
-                            score++ // Update score here
+        }
+        // Button handling
+        currentQuestion.options.forEachIndexed { index, option ->
+
+            Button(
+                onClick = {
+                     val isCorrect = checkAnswer(index, currentQuestion.correctAnswer)
+                    if (isCorrect) { // Correct answer + for points only
+                        score++ // Update score here
+                    }
+
+                    for (index in 0 until currentQuestion.options.size){
+                        if (currentQuestion.correctAnswer == index + 1) { // Show correct answer
                             buttonColors[index] = Color.Green
                             disableButton[index] = true
                             isButtonVisible = !isButtonVisible
-
                         }else{ // Wrong answer
                             buttonColors[index] = Color.Red
+                            disableButton[index] = true
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !disableButton[index],
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if(!disableButton[index])
-                            buttonColors[index] else Color.Gray,
-                        disabledContainerColor = if (disableButton[index])
-                        buttonColors[index] else Color.Gray),
-                ) {
-                    Text(option, fontSize = 17.sp)
-                }
-            }
-            if (isButtonVisible) {
-                Button(
-                    onClick = {
-                        if (currentQuestionIndex < questions.size - 1) {
-                            currentQuestionIndex++
-                            buttonColors.fill(Color.Blue)
-                            disableButton.fill(false)
-                            isButtonVisible = false
-
-
-                        } else {
-                            navController.navigate("ScreenScorePage")
-                            //showScore = true // Show score screen when quiz is completed
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(Color.Blue)
-                ) { Text("Next") }
-
-            }
-            Column(modifier = Modifier
-                .fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom){
-                Button(onClick = {
-                    try {
-                        navController.popBackStack() // Navigate back to the previous screen
-                    }catch (e: Exception){
-                        println("Navigation error: ${e.message}")
+                        disableButton[index] = true
                     }
-
-                }, modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
-                    .fillMaxWidth()){
-                    Text("Back")
-                }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !disableButton[index],
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if(!disableButton[index])
+                        buttonColors[index] else Color.Gray,
+                    disabledContainerColor = if (disableButton[index])
+                        buttonColors[index] else Color.Gray),
+            ) {
+                Text(option, fontSize = 17.sp)
             }
+        }
+        if (isButtonVisible) {
+            Button(
+                onClick = {
+                    if (currentQuestionIndex < questions.size - 1) {
+                        currentQuestionIndex++
+                        buttonColors.fill(Color.Blue)
+                        disableButton.fill(false)
+                        isButtonVisible = false
+
+                    } else {
+                        navController.navigate("ScreenScorePage")
+                    }
+                },
+                modifier = Modifier.align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(Color.Blue)
+            ) { Text("Next") }
+
+        }
+        Column(modifier = Modifier
+            .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom){
+            Button(onClick = {
+                try {
+                    navController.popBackStack() // Navigate back to the previous screen
+                }catch (e: Exception){
+                    println("Navigation error: ${e.message}")
+                }
+
+            }, modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                .fillMaxWidth()){
+                Text("Back")
+            }
+            Text(text = "Points: $score, correct answers $score out of ${questions.size}",
+                textAlign = TextAlign.Center)
         }
     }
 }
