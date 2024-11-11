@@ -16,9 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.letstudy.data.Datasource
 import com.example.letstudy.model.Courses
 
@@ -31,7 +33,15 @@ fun CourseApp() {
         composable("start_screen") { StartScreen(navController) }
         composable("history_screen") { ScreenHistory(navController) }
         composable("physics_screen") { ScreenPhysics() }
-        composable("ScreenScorePage") { ScreenScorePage(navController) }
+        composable("score_screen/{score}/{totalQuestions}",
+            arguments = listOf(
+                navArgument("score") { type = NavType.IntType },
+                navArgument("totalQuestions") { type = NavType.IntType })
+        ){ backStackEntry ->
+            val score = backStackEntry.arguments?.getInt("score") ?: 0
+            val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 0
+            ScreenScore(navController, score, totalQuestions)
+        }
     }
 }
 @Composable

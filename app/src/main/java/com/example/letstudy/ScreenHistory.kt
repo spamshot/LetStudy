@@ -35,6 +35,7 @@ fun ScreenHistory(navController: NavHostController) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
     val currentQuestion = questions[currentQuestionIndex]
     var score by remember { mutableStateOf(0) }
+    val totalQuestions = questions.size
 
     var buttonColors = remember {
         mutableStateListOf<Color>(*List(currentQuestion.options.size)
@@ -118,7 +119,7 @@ fun ScreenHistory(navController: NavHostController) {
                         isButtonVisible = false
 
                     } else {
-                        navController.navigate("ScreenScorePage")
+                        navController.navigate("score_screen/$score/$totalQuestions") //Navigate with score & total questions
                     }
                 },
                 modifier = Modifier.align(Alignment.End),
