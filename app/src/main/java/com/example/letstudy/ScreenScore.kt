@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,29 +21,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlin.math.roundToInt
 
 
 val minimumGrade = 65
+
 @Composable
 fun ScreenScore(navController: NavController, score: Int, totalQuestions: Int) {
-    //Image is used as background
-    Box(modifier = Modifier.padding(top = 230.dp, bottom = 80.dp, start = 10.dp, end = 10.dp)
-        .fillMaxWidth()
-        , contentAlignment = Alignment.TopCenter){
-        if (!mingrade(score, totalQuestions)) {
-            Image(
-                painter = painterResource(id = R.drawable.badjobbk),
-                contentDescription = "score",
-                modifier = Modifier,
-            )
-        }else{
-            Image(
-                painter = painterResource(id = R.drawable.goodjobbk),
-                contentDescription = "score",
-                modifier = Modifier,
-            )
-        }
 
+
+    //Image is used as background
+    Column(modifier = Modifier.fillMaxSize()){
+        val imageResource =
+            if (mingrade(score, totalQuestions)){
+            R.drawable.goodjobbk
+        } else {
+            R.drawable.badjobbk
+        }
+        Image(
+            painter = painterResource(id = imageResource),
+            contentDescription = "score",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 232.dp)
+                .height(450.dp)
+                .width(550.dp)
+        )
     }
 
 
@@ -93,11 +97,12 @@ fun ScreenScore(navController: NavController, score: Int, totalQuestions: Int) {
         }
     }
 }
-    //TODO Test plan on blueridge
+    //TODO Only show 2 decimal places
 
-fun grade(score: Int, totalQuestions: Int): Double {
+fun grade(score: Int, totalQuestions: Int): Double { // math for grade
     Log.d("grade", "totalQuestions: $totalQuestions, score: $score")
-    return (score.toDouble() / totalQuestions.toDouble()) * 100
+    val result = (score.toDouble() / totalQuestions.toDouble()) * 100
+    return String.format("%.2f", result).toDouble() // rounds to 2 decimal places
 
 }
 

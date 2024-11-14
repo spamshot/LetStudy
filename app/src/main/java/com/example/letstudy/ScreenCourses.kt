@@ -46,7 +46,7 @@ fun CourseApp() {
 }
 @Composable
 fun CourseList(courseList: List<Courses>, navController: NavHostController) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 32.dp)) {
         items(courseList) { course ->
             val route = when (course.title) {
                 R.string.history -> "history_screen"

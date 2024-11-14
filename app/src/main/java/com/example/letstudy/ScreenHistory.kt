@@ -46,6 +46,9 @@ fun ScreenHistory(navController: NavHostController) {
         {false}.toTypedArray()) }
 
     var isButtonVisible by remember { mutableStateOf(false) }
+
+    var indicatorText by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .padding(start = 16.dp, top = 33.dp, end = 16.dp)
@@ -104,12 +107,18 @@ fun ScreenHistory(navController: NavHostController) {
                     containerColor = if(!disableButton[index])
                         buttonColors[index] else Color.Gray,
                     disabledContainerColor = if (disableButton[index])
-                        buttonColors[index] else Color.Gray),
+                        buttonColors[index] else Color.Gray,
+                    contentColor = if(!disableButton[index])
+                        Color.White else Color.Black,
+                    disabledContentColor = Color.Black
+                )
+
+
             ) {
                 Text(option, fontSize = 17.sp)
             }
         }
-        if (isButtonVisible) {
+        if (isButtonVisible) { //Next page button
             Button(
                 onClick = {
                     if (currentQuestionIndex < questions.size - 1) {
@@ -125,12 +134,16 @@ fun ScreenHistory(navController: NavHostController) {
                 modifier = Modifier.align(Alignment.End),
                 colors = ButtonDefaults.buttonColors(Color.Blue)
             ) { Text("Next") }
+            Text("Score: $score/$totalQuestions")
+
 
         }
+
+
         Column(modifier = Modifier
             .fillMaxSize(),
             verticalArrangement = Arrangement.Bottom){
-            Button(onClick = {
+            Button(onClick = { //Back button
                 try {
                     navController.popBackStack() // Navigate back to the previous screen
                 }catch (e: Exception){
@@ -142,8 +155,6 @@ fun ScreenHistory(navController: NavHostController) {
                 .fillMaxWidth()){
                 Text("Back")
             }
-            Text(text = "Points: $score, correct answers $score out of ${questions.size}",
-                textAlign = TextAlign.Center)
         }
     }
 }

@@ -15,3 +15,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//todo for splash screen https://www.youtube.com/watch?v=eFZmMSm1G1c&t=577s
