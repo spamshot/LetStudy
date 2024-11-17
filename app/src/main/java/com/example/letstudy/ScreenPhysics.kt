@@ -1,31 +1,58 @@
 package com.example.letstudy
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.letstudy.data.questionsP
 
 
 @Composable
-fun ScreenPhysics() {
+fun ScreenPhysics(navController: NavHostController) {
+    var currentQuestionIndex by remember { mutableStateOf(0) }
+    val currentQuestion = questionsP[currentQuestionIndex]
+    var score by remember { mutableStateOf(0) }
+    val totalQuestions = questionsP.size
+
+    var buttonColors = remember {
+        mutableStateListOf<Color>(*List(currentQuestion.optionsP.size)
+        {Color.Blue}.toTypedArray()) }
+
+    var disableButton = remember {
+        mutableStateListOf<Boolean>(*List(currentQuestion.optionsP.size)
+        {false}.toTypedArray()) }
+
+    var isButtonVisible by remember { mutableStateOf(false) }
+
+    var indicatorText by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
-            .padding(start = 16.dp, top = 30.dp, end = 16.dp)
+            .padding(start = 16.dp, top = 33.dp, end = 16.dp)
     ) {
-        Text(text = "Question 7/20")
+        Text(text = "Question ${currentQuestionIndex + 1}/${questionsP.size}")
         LinearProgressIndicator(
-            progress = { 0.35f },
+            progress = (currentQuestionIndex + 1f) / questionsP.size,
             color = Color.Green,
             modifier = Modifier.fillMaxWidth()
         )
@@ -39,36 +66,97 @@ fun ScreenPhysics() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterHorizontally)
-
             ) {
                 Text(
                     modifier = Modifier
                         .padding(10.dp),
                     textAlign = TextAlign.Center,
                     fontSize = 22.sp,
-                    text = "Can sound waves generate heat?"
+                    text = currentQuestion.questionP
                 )
             }
         }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
-            Text("Paris", fontSize = 17.sp)
+        // Button handling
+        currentQuestion.optionsP.forEachIndexed { index, option ->
+
+            Button(
+                onClick = {
+                    val isCorrect = checkAnswer(index, currentQuestion.correctAnswerP)
+                    if (isCorrect) { // Correct answer + for points only
+                        score++ // Update score here
+                    }
+
+                    for (index in 0 until currentQuestion.optionsP.size){
+                        if (currentQuestion.correctAnswerP == index + 1) { // Show correct answer
+                            buttonColors[index] = Color.Green
+                            disableButton[index] = true
+                            isButtonVisible = !isButtonVisible
+                        }else{ // Wrong answer
+                            buttonColors[index] = Color.Red
+                            disableButton[index] = true
+                        }
+                        disableButton[index] = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !disableButton[index],
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if(!disableButton[index])
+                        buttonColors[index] else Color.Gray,
+                    disabledContainerColor = if (disableButton[index])
+                        buttonColors[index] else Color.Gray,
+                    contentColor = if(!disableButton[index])
+                        Color.White else Color.Black,
+                    disabledContentColor = Color.Black
+                )
+
+
+            ) {
+                Text(option, fontSize = 17.sp)
+            }
         }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
-            Text("Helena", fontSize = 17.sp)
-        }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
-            Text("Rome", fontSize = 17.sp)
-        }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
-            Text("Madrid", fontSize = 17.sp)
-        }
-        Button(modifier = Modifier
-            .align(Alignment.End)
-            .padding(top = 16.dp),
-            onClick = { /*TODO*/ }) {
-            Text("Next", fontSize = 17.sp)
+        if (isButtonVisible) { //Next page button
+            Button(
+                onClick = {
+                    if (currentQuestionIndex < questionsP.size - 1) {
+                        currentQuestionIndex++
+                        buttonColors.fill(Color.Blue)
+                        disableButton.fill(false)
+                        isButtonVisible = false
+
+                    } else {
+                        navController.navigate("score_screen/$score/$totalQuestions") //Navigate with score & total questions
+                    }
+                },
+                modifier = Modifier.align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(Color.Blue)
+            ) { Text("Next") }
+            Text("Score: $score/$totalQuestions")
+
+
         }
 
 
+        Column(modifier = Modifier
+            .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom){
+            Button(onClick = { //Back button
+                try {
+                    navController.popBackStack() // Navigate back to the previous screen
+                }catch (e: Exception){
+                    println("Navigation error: ${e.message}")
+                }
+
+            }, modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                .fillMaxWidth()){
+                Text("Back")
+            }
+        }
     }
 }
+
+// Function to check user's answer selection
+//fun checkAnswer(selectedOption: Int, correctAnswer: Int): Boolean {
+//    return selectedOption + 1 == correctAnswer // Add 1 to selectedOption
+//}

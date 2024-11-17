@@ -1,8 +1,8 @@
 package com.example.letstudy.data
 
-data class QuestionHistory(val question: String, val options: List<String>, val correctAnswer: Int)
+data class QuestionHistory(val questionH: String, val optionsH: List<String>, val correctAnswerH: Int)
 
-val questions = listOf(
+val questionsH = listOf(
     QuestionHistory("World War II began in what year?", listOf("1835", "1776", "1972", "1939"), 4),
     QuestionHistory("World War I began in what year?", listOf("1933", "2001", "1914", "1969"), 3),
     QuestionHistory("When was the First Moon Landing?", listOf("1914", "1969", "2010", "1991"), 2),

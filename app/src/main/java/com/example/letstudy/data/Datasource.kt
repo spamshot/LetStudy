@@ -4,7 +4,7 @@ import com.example.letstudy.model.Courses
 import com.example.letstudy.R
 
 class Datasource {
-
+//Data for courses
     fun loadCourses(): List<Courses> {
         return listOf(
             Courses(1, R.string.history, R.drawable.history),

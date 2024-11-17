@@ -32,7 +32,7 @@ fun CourseApp() {
         startDestination = "start_screen") {
         composable("start_screen") { StartScreen(navController) }
         composable("history_screen") { ScreenHistory(navController) }
-        composable("physics_screen") { ScreenPhysics() }
+        composable("physics_screen") { ScreenPhysics(navController) }
         composable("score_screen/{score}/{totalQuestions}",
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
@@ -46,7 +46,7 @@ fun CourseApp() {
 }
 @Composable
 fun CourseList(courseList: List<Courses>, navController: NavHostController) {
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 32.dp)) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 40.dp)) {
         items(courseList) { course ->
             val route = when (course.title) {
                 R.string.history -> "history_screen"
@@ -76,7 +76,7 @@ fun CourseCard(course: Courses, navController: NavHostController, route: String)
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(75.dp)
+                    .height(85.dp)
             )
             Text(
                 text = stringResource(course.title),

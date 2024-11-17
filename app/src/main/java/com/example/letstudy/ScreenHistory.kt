@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.letstudy.data.questions
+import com.example.letstudy.data.questionsH
 
 
 @Composable
@@ -33,16 +33,16 @@ fun ScreenHistory(navController: NavHostController) {
 
 
     var currentQuestionIndex by remember { mutableStateOf(0) }
-    val currentQuestion = questions[currentQuestionIndex]
+    val currentQuestion = questionsH[currentQuestionIndex]
     var score by remember { mutableStateOf(0) }
-    val totalQuestions = questions.size
+    val totalQuestions = questionsH.size
 
     var buttonColors = remember {
-        mutableStateListOf<Color>(*List(currentQuestion.options.size)
+        mutableStateListOf<Color>(*List(currentQuestion.optionsH.size)
         {Color.Blue}.toTypedArray()) }
 
     var disableButton = remember {
-        mutableStateListOf<Boolean>(*List(currentQuestion.options.size)
+        mutableStateListOf<Boolean>(*List(currentQuestion.optionsH.size)
         {false}.toTypedArray()) }
 
     var isButtonVisible by remember { mutableStateOf(false) }
@@ -53,9 +53,9 @@ fun ScreenHistory(navController: NavHostController) {
         modifier = Modifier
             .padding(start = 16.dp, top = 33.dp, end = 16.dp)
     ) {
-        Text(text = "Question ${currentQuestionIndex + 1}/${questions.size}")
+        Text(text = "Question ${currentQuestionIndex + 1}/${questionsH.size}")
         LinearProgressIndicator(
-            progress = (currentQuestionIndex + 1f) / questions.size,
+            progress = (currentQuestionIndex + 1f) / questionsH.size,
             color = Color.Green,
             modifier = Modifier.fillMaxWidth()
         )
@@ -75,22 +75,22 @@ fun ScreenHistory(navController: NavHostController) {
                         .padding(10.dp),
                     textAlign = TextAlign.Center,
                     fontSize = 22.sp,
-                    text = currentQuestion.question
+                    text = currentQuestion.questionH
                 )
             }
         }
         // Button handling
-        currentQuestion.options.forEachIndexed { index, option ->
+        currentQuestion.optionsH.forEachIndexed { index, option ->
 
             Button(
                 onClick = {
-                     val isCorrect = checkAnswer(index, currentQuestion.correctAnswer)
+                     val isCorrect = checkAnswer(index, currentQuestion.correctAnswerH)
                     if (isCorrect) { // Correct answer + for points only
                         score++ // Update score here
                     }
 
-                    for (index in 0 until currentQuestion.options.size){
-                        if (currentQuestion.correctAnswer == index + 1) { // Show correct answer
+                    for (index in 0 until currentQuestion.optionsH.size){
+                        if (currentQuestion.correctAnswerH == index + 1) { // Show correct answer
                             buttonColors[index] = Color.Green
                             disableButton[index] = true
                             isButtonVisible = !isButtonVisible
@@ -121,7 +121,7 @@ fun ScreenHistory(navController: NavHostController) {
         if (isButtonVisible) { //Next page button
             Button(
                 onClick = {
-                    if (currentQuestionIndex < questions.size - 1) {
+                    if (currentQuestionIndex < questionsH.size - 1) {
                         currentQuestionIndex++
                         buttonColors.fill(Color.Blue)
                         disableButton.fill(false)
